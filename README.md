@@ -3,7 +3,7 @@
 [Source]: (https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset)
 
 
-# Predicting Attrition Rate of a Employees in a Company with ZenML and Streamlit
+# Predicting Attrition Rate of an Employee in a Company with ZenML and Streamlit
 
 **Problem statement**: Predict whether a employee working in a company will leave/not based on several factors like income, age, performance, personal details, etc., We will be using the [Dataset: IBM HR Analytics Employee Attrition & Performance](https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset). The objective here is to predict the attrition rate of an employee based on features like income, age, performance etc. In order to achieve this in a real-world scenario, we will be using [ZenML](https://zenml.io/) to build a production-ready pipeline to predict the attrition rate of an employee.
 
