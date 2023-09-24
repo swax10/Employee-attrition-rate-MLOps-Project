@@ -157,8 +157,7 @@ streamlit run streamlit_app.py
 /api/v1/info (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fea7d7d5b70>: Failed to establish a new connection: [Errno 111] Connection
 refused'))
 
-     '''bash
+     ```bash
          zenml down
-         zenml downgrade
          zenml up
-         '''
+         ```
