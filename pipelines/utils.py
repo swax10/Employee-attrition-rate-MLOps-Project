@@ -10,7 +10,7 @@ def get_data_for_test():
         print("Original Data sample:")
         print(df.head())
         # Create a DataPreProcessStrategy instance with encoder
-        preprocess_strategy = DataPreProcessStrategy(encoder=None)  # Pass encoder as None
+        preprocess_strategy = DataPreProcessStrategy() 
         # Data cleaning with preprocessing
         data_cleaning = DataCleaning(df, preprocess_strategy)
         df = data_cleaning.handle_data()
