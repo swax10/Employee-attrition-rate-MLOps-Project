@@ -13,8 +13,8 @@ experiment_tracker = Client().active_stack.experiment_tracker
 def train_model(
     X_train: pd.DataFrame,
     X_test: pd.DataFrame,
-    Y_train: pd.DataFrame,
-    Y_test: pd.DataFrame,
+    Y_train: pd.Series,
+    Y_test: pd.Series,
     config: ModelNameConfig,
 ) -> ClassifierMixin:
     try:
