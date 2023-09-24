@@ -20,7 +20,7 @@ experiment_tracker=Client().active_stack.experiment_tracker
 @step(experiment_tracker=experiment_tracker.name)
 def evaluate_model(model: ClassifierMixin,
                    X_test: pd.DataFrame,
-                   Y_test: pd.DataFrame) -> Annotated[float, "classification_report"]:
+                   Y_test: pd.Series) -> Annotated[float, "classification_report"]:
     try:
         prediction = model.predict(X_test)
         report_class = ClassificationReport()  # Create an instance of ClassificationReport
