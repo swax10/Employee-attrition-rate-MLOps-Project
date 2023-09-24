@@ -1,4 +1,4 @@
-from sklearn.base import RegressorMixin
+from sklearn.base import ClassifierMixin
 from zenml import pipeline
 from pipelines.training_pipeline import train_pipeline
 from zenml.client import Client
