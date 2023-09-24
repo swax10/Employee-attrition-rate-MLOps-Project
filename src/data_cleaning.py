@@ -13,8 +13,7 @@ class DataStrategy(ABC):
     def handle_data(self,data:pd.DataFrame)->Union[pd.DataFrame,pd.Series]:
         pass
 class DataPreProcessStrategy(DataStrategy):
-    def __init__(self, encoder=None):
-        self.encoder = encoder
+    
     """This class is used to preprocess the given dataset"""
     def handle_data(self, data: pd.DataFrame) -> pd.DataFrame:
         try:
@@ -71,7 +70,7 @@ class DataDivideStrategy(DataStrategy):
             raise e
 
 class DataCleaning:
-            def __init__(self,data:pd.DataFrame,strategy:DataStrategy):
+            def __init__(self,data:pd.DataFrame,strategy:DataStrategy)->None:
                 self.data=data
                 self.strategy=strategy
             def handle_data(self)->Union[pd.DataFrame,pd.Series]:
@@ -82,57 +81,5 @@ class DataCleaning:
                     raise e
                         
                  
-"""A very nice explanantion of the Strategy design pattern
-The Strategy Design Pattern is a simple and powerful concept in software design. It's used when you want to define a family of interchangeable algorithms or behaviors and make them easily switchable without affecting the client code.
-
-Imagine you're a medieval warrior, and you have different weapons to choose from: a sword, a bow, and a axe. Depending on the situation, you might want to use a different weapon. The Strategy Design Pattern helps you model this scenario:
-
-Context: This is like you, the warrior. It's the entity that will use the strategies. It has a reference to a strategy, but it doesn't need to know the specific details of each strategy.
-
-Strategy: These are the different weapons: sword, bow, axe. Each weapon is a separate class that implements the same interface. This interface defines a common method that all weapons will have, like attack().
-
-Concrete Strategies: These are the actual instances of the weapons (sword instance, bow instance, etc.). They implement the methods defined in the strategy interface.
-
-Here's how it works in code:
-
-python
-Copy code
-# Define the Strategy interface
-class WeaponStrategy:
-    def attack(self):
-        pass
-Red(!)
-# Concrete Strategy classes
-class Sword(WeaponStrategy):
-    def attack(self):
-        print("Attacking with a sword!")
-
-class Bow(WeaponStrategy):
-    def attack(self):
-        print("Shooting with a bow!")
-
-# Context class
-class Warrior:
-    def __init__(self, weapon):
-        self.weapon = weapon
-
-    def attack_with_weapon(self):
-        self.weapon.attack()
-
-# Create different weapon instances
-sword = Sword()
-bow = Bow()
-
-# Create a warrior with different weapons
-warrior_with_sword = Warrior(sword)
-warrior_with_bow = Warrior(bow)
-
-# Warriors attack using their respective weapons
-warrior_with_sword.attack_with_weapon()
-warrior_with_bow.attack_with_weapon()
-In this example, the Warrior class is the context, WeaponStrategy is the strategy interface, and Sword and Bow are the concrete strategy classes. Depending on the weapon you give the warrior, their attack behavior changes.
-
-The beauty of the Strategy Design Pattern is that it promotes separation of concerns and flexibility. You can add new weapons (strategies) without modifying the existing code (context), and you can easily switch between weapons at runtime. This pattern is widely used in software design to manage different algorithms, data handling methods, and more, without tightly coupling them to the main codebase."""
-                
 
               
