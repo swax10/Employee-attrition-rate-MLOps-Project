@@ -20,15 +20,13 @@ docker_settings=DockerSettings(required_integrations=[MLFLOW])
 class DeploymentTriggerConfig(BaseParameters):
   """Class for configuring deployment trigger"""
   min_accuracy: float=0.0
-@step(enable_cache=False)
-def dynamic_importer()->str:
-   data=get_data_for_test()
-   return data  
+
+
 @step 
 def deployment_trigger(
   accuracy:float,
   config: DeploymentTriggerConfig,
-):
+)->bool:
   return accuracy>config.min_accuracy
 
 
@@ -60,6 +58,12 @@ class MLFlowDeploymentLoaderStepParameters(BaseParameters):
    pipeline_name:str
    step_name:str
    running:bool=True
+
+
+@step(enable_cache=False)
+def dynamic_importer()->str:
+   data=get_data_for_test()
+   return data  
 
 @step(enable_cache=False)
 def prediction_service_loader(
@@ -132,7 +136,6 @@ def predictor(
 @pipeline(enable_cache=False,settings={"docker":docker_settings})
 def inference_pipeline(pipeline_name: str, pipeline_step_name:str):
    data=dynamic_importer()
-   #print("Data Shape for Inference:", data.shape)  # Print the shape of data for inference
    service=prediction_service_loader(
       pipeline_name=pipeline_name,
       pipeline_step_name=pipeline_step_name,
