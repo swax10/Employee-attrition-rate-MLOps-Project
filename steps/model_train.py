@@ -2,14 +2,14 @@ import mlflow
 import pandas as pd
 import logging
 from zenml import step
-from src.model_dev import LogisticRegressionModel  # Import the LogisticRegressionModel
+from src.model_dev import LogisticRegressionModel 
 from .config import ModelNameConfig
-from sklearn.base import ClassifierMixin  # Import ClassifierMixin for logistic regression
+from sklearn.base import ClassifierMixin 
 from zenml.client import Client
 
 experiment_tracker = Client().active_stack.experiment_tracker
 
-@step(experiment_tracker=experiment_tracker.name)
+@step(experiment_tracker=experiment_tracker.name,enable_cache=False)
 def train_model(
     X_train: pd.DataFrame,
     X_test: pd.DataFrame,

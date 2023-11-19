@@ -12,12 +12,13 @@ class DataStrategy(ABC):
     @abstractmethod
     def handle_data(self,data:pd.DataFrame)->Union[pd.DataFrame,pd.Series]:
         pass
+
 class DataPreProcessStrategy(DataStrategy):
     
     """This class is used to preprocess the given dataset"""
-    def handle_data(self, data: pd.DataFrame) -> pd.DataFrame:
+    def handle_data(self, data: pd.DataFrame) ->Union[pd.DataFrame,pd.Series]:
         try:
-            print("Column Names Before Preprocessing:", data.columns)  # Add this line
+            print("Column Names Before Preprocessing:", data.columns)  
             data = data.drop(["EmployeeCount", "EmployeeNumber", "StandardHours"], axis=1)
             if 'Attrition' in data.columns:
                 print("Attrition column found in data.")

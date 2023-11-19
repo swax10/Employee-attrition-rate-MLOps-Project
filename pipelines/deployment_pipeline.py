@@ -1,3 +1,4 @@
+import os
 import json
 import numpy as np
 import pandas as pd
@@ -17,9 +18,15 @@ from steps.ingest_data import ingest_data
 from steps.model_train import train_model
 
 docker_settings=DockerSettings(required_integrations=[MLFLOW])
+
+##################################
+#        Continuous Deployment   #
+#              Pipeline          #
+##################################
+
 class DeploymentTriggerConfig(BaseParameters):
   """Class for configuring deployment trigger"""
-  min_accuracy: float=0.0
+  min_accuracy: float=0.5
 
 
 @step 
@@ -34,12 +41,12 @@ def deployment_trigger(
 def continuous_deployment_pipeline(
    data_path: str,
    #data_path="C:/Users/user/Desktop/machine learning/Project/zenml Pipeline/Customer_Satisfaction_project/data/olist_customers_dataset.csv",
-   min_accuracy:float=0.0,
+   min_accuracy:float=0.5,
    workers: int=1,
    timeout: int=DEFAULT_SERVICE_START_STOP_TIMEOUT,
 ):
-    
-   df=ingest_data()
+   #ingest the data
+   df=ingest_data(data_path=data_path)
    # Clean the data and split into training/test sets
    X_train,X_test,Y_train,Y_test=clean_df(df)
    #print("X_train Shape:", X_train.shape)  # Print the shape of X_train
@@ -53,6 +60,11 @@ def continuous_deployment_pipeline(
       workers=workers,
       timeout=timeout,
     )
+
+##################################
+#        Inference               #
+#              Pipeline          #
+##################################
     
 class MLFlowDeploymentLoaderStepParameters(BaseParameters):
    pipeline_name:str
@@ -89,7 +101,7 @@ def prediction_service_loader(
    return existing_services[0]
 
 
-@step
+@step(enable_cache=False)
 def predictor(
     service: MLFlowDeploymentService,
     data: str,
@@ -120,13 +132,13 @@ def predictor(
        'RelationshipSatisfaction', 'StockOptionLevel', 'TotalWorkingYears',
        'TrainingTimesLastYear', 'WorkLifeBalance', 'YearsAtCompany',
        'YearsInCurrentRole', 'YearsSinceLastPromotion',
-       'YearsWithCurrManager',]
+       'YearsWithCurrManager']
     try:
       df = pd.DataFrame(data["data"], columns=columns_for_df)
       json_list = json.loads(json.dumps(list(df.T.to_dict().values())))
       data = np.array(json_list)
-      print("Input Data Shape:", data.shape)
-      print("Input Data Sample:", data[:5])
+      #print("Input Data Shape:", data.shape)
+      #print("Input Data Sample:", data[:5])
       prediction = service.predict(data)
       return prediction
     except Exception as e:

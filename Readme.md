@@ -1,9 +1,14 @@
+#Problem Statement
+Predict whether a employee working in a company will leave/not based on several factors like income, age, performance, personal details, etc.,
+
+#Solution:
+Create a Logistic Regression model to predict the attrition rate of the employee.
 
 # Dataset: IBM HR Analytics Employee Attrition & Performance
 [Source]: (https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset)
 
 
-# Predicting Attrition Rate of an Employee in a Company with ZenML and Streamlit
+# Predicting how a customer will feel about a product before they even ordered it
 
 **Problem statement**: Predict whether a employee working in a company will leave/not based on several factors like income, age, performance, personal details, etc., We will be using the [Dataset: IBM HR Analytics Employee Attrition & Performance](https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset). The objective here is to predict the attrition rate of an employee based on features like income, age, performance etc. In order to achieve this in a real-world scenario, we will be using [ZenML](https://zenml.io/) to build a production-ready pipeline to predict the attrition rate of an employee.
 
@@ -157,7 +162,8 @@ streamlit run streamlit_app.py
 /api/v1/info (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fea7d7d5b70>: Failed to establish a new connection: [Errno 111] Connection
 refused'))
 
-     ```bash
+     '''bash
          zenml down
+         zenml downgrade
          zenml up
-         ```
+         '''

@@ -14,7 +14,7 @@ DEPLOY_AND_PREDICT="deploy_and_predict"
 @click.command()
 @click.option(
     "--config",
-   # "-c"
+    # "-c"
     type=click.Choice([DEPLOY, PREDICT, DEPLOY_AND_PREDICT]),
     default=DEPLOY_AND_PREDICT,
     help="Optionally you can choose to only run the deployment "

@@ -6,7 +6,6 @@ from src.data_cleaning import DataCleaning, DataPreProcessStrategy
 def get_data_for_test():
     try:
         df = pd.read_csv("./data/HR-Employee-Attrition.csv")
-        #df = df.sample(n=100)
         print("Original Data sample:")
         print(df.head())
         # Create a DataPreProcessStrategy instance with encoder
@@ -19,6 +18,7 @@ def get_data_for_test():
         # Drop 'Attrition' column from test data
         df.drop(["Attrition"], axis=1, inplace=True)
         print("Data Shape for Inference:", df.shape)  # Add this line to print the shape
+        df = df.sample(100)
         result = df.to_json(orient="split")
         return result
     except Exception as e:
