@@ -1,7 +1,7 @@
-#Problem Statement
+# Problem Statement
 Predict whether a employee working in a company will leave/not based on several factors like income, age, performance, personal details, etc.,
 
-#Solution:
+# Solution:
 Create a Logistic Regression model to predict the attrition rate of the employee.
 
 # Dataset: IBM HR Analytics Employee Attrition & Performance
