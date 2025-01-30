@@ -39,12 +39,33 @@ def deployment_trigger(
   return accuracy>=config.min_accuracy
 
 
-@pipeline(enable_cache=False, settings={"docker":docker_settings})
+@step
+def mlflow_model_deployer(
+    model,
+    deploy_decision: bool,
+) -> None:
+    """Deploys the model to MLflow's model registry if deploy_decision is True"""
+    if deploy_decision:
+        # Set up MLflow tracking
+        mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
+        mlflow.set_experiment("employee-attrition")
+        
+        # Log the model to MLflow
+        with mlflow.start_run():
+            mlflow.sklearn.log_model(
+                sk_model=model,
+                artifact_path="model",
+                registered_model_name="employee_attrition_model"
+            )
+            print("Model logged to MLflow")
+    else:
+        print("Model deployment was skipped due to inadequate performance.")
+
+
+@pipeline(enable_cache=False)
 def continuous_deployment_pipeline(
    data_path: str = "./data/HR-Employee-Attrition.csv",
    min_accuracy:float=0.1,
-   workers: int=1,
-   timeout: int=DEFAULT_SERVICE_START_STOP_TIMEOUT,
 ):
    # Enable MLflow autologging
    mlflow.sklearn.autolog()
@@ -58,12 +79,8 @@ def continuous_deployment_pipeline(
    model=train_model(X_train=X_train, X_test=X_test, y_train=Y_train, y_test=Y_test)
    accuracy=evaluate_model(model=model, X_test=X_test, Y_test=Y_test)
    deployment_decision=deployment_trigger(accuracy=accuracy)    
-   mlflow_model_deployer_step(
-      model=model,
-      deploy_decision=deployment_decision,
-      workers=workers,
-      timeout=timeout,
-    )
+   mlflow_model_deployer(model=model, deploy_decision=deployment_decision)
+
 
 ##################################
 #        Inference               #
@@ -149,10 +166,8 @@ def predictor(
         print(f"Prediction error: {str(e)}")
 
    
-@pipeline(enable_cache=False, settings={"docker": docker_settings})
+@pipeline(enable_cache=False)
 def inference_pipeline(
-    pipeline_name: str,
-    pipeline_step_name: str,
     data_path: str = "./data/HR-Employee-Attrition.csv",
 ):
     """Inference pipeline for making predictions"""
@@ -160,29 +175,15 @@ def inference_pipeline(
     df = ingest_data(data_path=data_path)
     X_train, X_test, Y_train, Y_test = clean_df(df)
     
-    # Get the prediction service
-    model_deployment_service = MLFlowModelDeployer.get_active_model_deployer()
-    model_server = model_deployment_service.find_model_server(
-        pipeline_name=pipeline_name,
-        pipeline_step_name=pipeline_step_name,
-        running=True,
-    )
-
-    if model_server:
-        service = cast(MLFlowDeploymentService, model_server[0])
-        if service.is_running:
-            print(
-                f"Model server is running and accepting predictions at:\n"
-                f"    {service.prediction_url}\n"
-            )
-            # You can now use service.predict() to get predictions
-            try:
-                predictions = service.predict(X_test)
-                print(f"Made predictions for {len(predictions)} samples")
-                print(f"Sample predictions: {predictions[:5]}")
-            except Exception as e:
-                print(f"Error making predictions: {e}")
-        else:
-            print("Model server is not running. Please deploy the model first.")
-    else:
-        print("No model server found. Please deploy the model first.")
+    try:
+        # Load the model from MLflow
+        model = mlflow.sklearn.load_model("models:/employee_attrition_model/latest")
+        
+        # Make predictions
+        predictions = model.predict(X_test)
+        print(f"Made predictions for {len(predictions)} samples")
+        print(f"Sample predictions: {predictions[:5]}")
+        
+    except Exception as e:
+        print(f"Error loading model or making predictions: {e}")
+        print("Make sure the model is deployed first using the deployment pipeline.")

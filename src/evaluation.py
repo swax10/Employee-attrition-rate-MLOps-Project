@@ -1,6 +1,8 @@
 import logging
 import numpy as np
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
 from abc import ABC, abstractmethod
 
 class Evaluation(ABC):
@@ -22,3 +24,13 @@ class ClassificationReport(Evaluation):
         except Exception as e:
             logging.error(f"Error in calculating Classification Report: {e}")
             raise e
+
+    def plot_confusion_matrix(self, y_true: np.ndarray, y_pred: np.ndarray):
+        """Plot confusion matrix using seaborn"""
+        cm = confusion_matrix(y_true, y_pred)
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+        plt.title('Confusion Matrix')
+        plt.ylabel('True Label')
+        plt.xlabel('Predicted Label')
+        return plt.gcf()
