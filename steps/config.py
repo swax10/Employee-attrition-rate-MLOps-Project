@@ -1,4 +1,4 @@
-from zenml.steps import BaseParameters
-class ModelNameConfig(BaseParameters):
-    model_name: str="LogisticRegression"
-    
+from pydantic import BaseModel
+
+class ModelNameConfig(BaseModel):
+    model_name: str = "LogisticRegression"
